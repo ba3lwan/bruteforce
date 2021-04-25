@@ -1,6 +1,11 @@
 #!/usr/bin/python3
 # -*- encoding: utf-8 -*-
 
+#
+# Created by:
+#           ali_elainous
+#
+
 # Script for get username of a website login_screen
 # ex: http://localhost/iname
 # input:
@@ -21,7 +26,7 @@ def check(url):
     print('[ Done ]') if  res.ok else exit('[ Fail ]\nUrlNotExist:')
 
 def has_login(code):
-    return 
+    return any(findall(r'type="password"|type="submit"|type="email"', code))
 
 def main():
     # url, users : http://localhost  user_list.txt
@@ -31,6 +36,8 @@ def main():
     url += '' if  url.endswith('/') else '/'
     check(url)
     for user in users:
+        if  not user.strip():
+            continue
         sleep(.5)
         url_path = url + user.strip()
         print('[ ... ] Getting {}'.format(url_path), end='\r', flush=1)
