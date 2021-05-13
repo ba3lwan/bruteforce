@@ -21,10 +21,15 @@ from  re        import  findall
 
 def check(url):
     print('[ .... ] Checking url', end='\r', flush=1)
-    res = get(url)
-    res.close()
-    print('[ Done ]') if  res.ok else exit('[ Fail ]\nUrlNotExist:')
-
+    try:
+        res = get(url, timeoout=7)
+        res.close()
+        print('[ Done ]') if  res.ok else exit('[ Fail ]\nUrlNotExist:')
+    except TimeoutError:
+        quit('[ Fail ]\nTimeoutError')
+    except Exception as err:
+        exit('[ Fail ]\nError: Something is wrong, please check your url.')
+        
 def has_login(code):
     return any(findall(r'type="password"|type="submit"|type="email"', code))
 
@@ -41,8 +46,11 @@ def main():
         sleep(.5)
         url_path = url + user.strip()
         print('[ ... ] Getting {}'.format(url_path), end='\r', flush=1)
-        res = get(url_path)
-        res.close()
+        try:
+            res = get(url_path, timeout=7)
+            res.close()
+        except Exception as err:
+            print('err: ', err) ; continue
         if  has_login(res.text):
             print('[ Done ]')
             quit('====> login_screen_path : {} '.format(url_path))
